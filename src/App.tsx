@@ -15,10 +15,20 @@ import routerProvider from "@pankod/refine-react-router-v6";
 import { RefineKbarProvider } from "@pankod/refine-kbar";
 import { Title, Sider, Layout, Header } from "components/layout";
 import { ColorModeContextProvider } from "contexts";
-import { PostList, PostCreate, PostEdit } from "pages/posts";
+import { PostList, PostEdit } from "pages/posts";
 import { OffLayoutArea } from "components/offLayoutArea";
+import { liveProvider } from "@pankod/refine-ably";
+import { ablyClient } from "./providers/liveProvider";
+import { RegistrationApi } from "./shared/api/registrationApi";
+
+const devSeminarServer = "http://localhost:5000";
+const prodSeminarServer = "https://seminarmsk.ru:7000";
 
 function App() {
+  const isDev = process.env.NODE_ENV === "development";
+
+  const API_URL = isDev ? devSeminarServer : prodSeminarServer;
+
   return (
     <ColorModeContextProvider>
       <CssBaseline />
@@ -26,7 +36,7 @@ function App() {
       <RefineSnackbarProvider>
         <RefineKbarProvider>
           <Refine
-            dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
+            dataProvider={dataProvider(devSeminarServer)}
             notificationProvider={notificationProvider}
             ReadyPage={ReadyPage}
             catchAll={<ErrorComponent />}
@@ -34,16 +44,18 @@ function App() {
             Sider={Sider}
             Layout={Layout}
             Header={Header}
+            options={{ liveMode: "auto", mutationMode: "undoable" }}
             routerProvider={routerProvider}
             resources={[
               {
-                name: "posts",
+                name: "users",
                 list: PostList,
-                create: PostCreate,
+                // create: PostCreate,
                 edit: PostEdit,
               },
             ]}
             OffLayoutArea={OffLayoutArea}
+            liveProvider={liveProvider(ablyClient)}
           />
         </RefineKbarProvider>
       </RefineSnackbarProvider>

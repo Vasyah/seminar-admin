@@ -1,12 +1,15 @@
-export interface ICategory {
-  id: number;
-  title: string;
-}
-export interface IPost {
-  id: number;
-  title: string;
-  content: string;
-  status: "published" | "draft" | "rejected";
-  createdAt: string;
-  category: { id: number };
+export interface IUser {
+  id?: number;
+  name: string;
+  town: string;
+  birthDate: string;
+  phone: string;
+  email: string;
+  status: "Ученик" | "Учитель";
+  teachers: string[];
+  isVegan: boolean;
+  isConcert: boolean;
+  isCar: boolean;
+  isRegistrationsEmailSent?: boolean;
+  isPaymentEmailSent?: boolean;
 }
