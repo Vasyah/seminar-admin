@@ -14,10 +14,13 @@ import {
 import { IUser } from "../../interfaces";
 import { RegistrationButton } from "../../shared/registration/components/RegistrationButton";
 import { PaymentButton } from "../../shared/registration/components/PaymentButton";
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
 
 export const PostList: React.FC = () => {
   const { dataGridProps } = useDataGrid<IUser>({
     liveMode: "auto",
+    // hasPagination: false,
   });
 
   const {
@@ -31,8 +34,8 @@ export const PostList: React.FC = () => {
   const columns = React.useMemo<GridColumns<IUser>>(
     () => [
       {
-        field: "id",
-        headerName: "ID",
+        field: "index",
+        headerName: "№",
         type: "number",
         width: 50,
       },
@@ -49,7 +52,7 @@ export const PostList: React.FC = () => {
         headerName: "Город",
         headerAlign: "left",
         align: "left",
-        minWidth: 175,
+        minWidth: 125,
         flex: 0.5,
         valueOptions: options,
         valueFormatter: (params: GridValueFormatterParams<Option>) => {
@@ -149,11 +152,51 @@ export const PostList: React.FC = () => {
     [options, isLoading]
   );
 
+  const fileType =
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+  const fileExtension = ".xlsx";
+  const exportToCSV = (csvData: unknown[], fileName: string) => {
+    const ws = XLSX.utils.json_to_sheet(csvData);
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, fileName + fileExtension);
+  };
+
   return (
     <>
-      <List>
+      <List
+        headerButtons={
+          <Button
+            onClick={(e) =>
+              exportToCSV(
+                dataGridProps.rows.map((row) => {
+                  const roww = { ...row };
+
+                  for (let line in roww) {
+                    if (typeof roww[line] === "boolean") {
+                      roww[line] = !!roww[line] ? "+" : "-";
+                    }
+                  }
+                  return {
+                    ...roww,
+                    teachers: row.teachers.join(", "),
+                  };
+                }) as unknown[],
+                "семинар"
+              )
+            }
+          >
+            Экспортировать
+          </Button>
+        }
+      >
         <DataGrid
           {...dataGridProps}
+          rows={dataGridProps.rows.map((row, index) => ({
+            index: index + 1,
+            ...row,
+          }))}
           columns={columns}
           autoHeight
           editMode={"cell"}

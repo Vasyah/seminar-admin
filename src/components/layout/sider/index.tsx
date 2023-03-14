@@ -21,6 +21,7 @@ import {
   ChevronRight,
   MenuRounded,
   Dashboard,
+  AutoAwesome,
 } from "@mui/icons-material";
 import {
   CanAccess,
@@ -386,7 +387,7 @@ export const Sider: typeof DefaultSider = ({ render }) => {
               justifyContent: "center",
             }}
           >
-            <RenderToTitle collapsed={collapsed} />
+            <AutoAwesome sx={{ color: "yellow" }} />
           </Box>
           <Box
             sx={{
@@ -428,7 +429,7 @@ export const Sider: typeof DefaultSider = ({ render }) => {
             sx={{ color: "#fff", width: "36px" }}
             onClick={() => setOpened((prev) => !prev)}
           >
-            <MenuRounded />
+            <AutoAwesome />
           </IconButton>
         </Box>
       </Box>

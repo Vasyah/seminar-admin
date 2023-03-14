@@ -19,7 +19,7 @@ import { PostList, PostEdit } from "pages/posts";
 import { OffLayoutArea } from "components/offLayoutArea";
 import { liveProvider } from "@pankod/refine-ably";
 import { ablyClient } from "./providers/liveProvider";
-import { RegistrationApi } from "./shared/api/registrationApi";
+import { Dashboard } from "./pages/dashboard/Dashboard";
 
 const devSeminarServer = "http://localhost:5000";
 const prodSeminarServer = "https://seminarmsk.ru:7000";
@@ -36,7 +36,7 @@ function App() {
       <RefineSnackbarProvider>
         <RefineKbarProvider>
           <Refine
-            dataProvider={dataProvider(devSeminarServer)}
+            dataProvider={dataProvider(prodSeminarServer)}
             notificationProvider={notificationProvider}
             ReadyPage={ReadyPage}
             catchAll={<ErrorComponent />}
@@ -48,6 +48,12 @@ function App() {
             routerProvider={routerProvider}
             resources={[
               {
+                options: { label: "Информация" },
+                name: "Dashboard",
+                list: Dashboard,
+              },
+              {
+                options: { label: "Участники" },
                 name: "users",
                 list: PostList,
                 // create: PostCreate,
