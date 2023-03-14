@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { useApiUrl, useCustom } from "@pankod/refine-core";
 import { IUser } from "../../interfaces";
-import { Avatar, Grid, Stack } from "@pankod/refine-mui";
+import { Avatar, Grid, Stack, Theme } from "@pankod/refine-mui";
 import GroupIcon from "@mui/icons-material/Group";
 import PaymentsIcon from "@mui/icons-material/Payments";
 
@@ -24,7 +24,6 @@ export const Dashboard: FC<IDashboard> = (props: IDashboard) => {
       <Grid item xs={12} md={6}>
         <div
           style={{
-            backgroundColor: "#fff",
             padding: "16px",
             borderRadius: "4px",
             boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
