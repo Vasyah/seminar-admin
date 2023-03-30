@@ -1,5 +1,5 @@
 import React from "react";
-import { Option, useSelect } from "@pankod/refine-core";
+import { useSelect } from "@pankod/refine-core";
 import {
   useDataGrid,
   DataGrid,
@@ -8,8 +8,8 @@ import {
   Stack,
   EditButton,
   DeleteButton,
-  GridValueFormatterParams,
   Button,
+  CreateButton,
 } from "@pankod/refine-mui";
 import { IUser } from "../../interfaces";
 import { RegistrationButton } from "../../shared/registration/components/RegistrationButton";
@@ -18,17 +18,17 @@ import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
 
 export const PostList: React.FC = () => {
-  const { dataGridProps } = useDataGrid<IUser>({
-    liveMode: "auto",
-    // hasPagination: false,
-  });
-
   const {
     options,
     queryResult: { isLoading },
   } = useSelect<IUser>({
     resource: "users",
-    hasPagination: false,
+    // hasPagination: false,
+  });
+
+  const { dataGridProps } = useDataGrid<IUser>({
+    liveMode: "auto",
+    // hasPagination: false,
   });
 
   const columns = React.useMemo<GridColumns<IUser>>(
@@ -44,8 +44,6 @@ export const PostList: React.FC = () => {
         headerName: "ФИО",
         minWidth: 300,
         flex: 1,
-        pinnable: true,
-        editable: true,
       },
       {
         field: "town",
@@ -54,21 +52,6 @@ export const PostList: React.FC = () => {
         align: "left",
         minWidth: 125,
         flex: 0.5,
-        valueOptions: options,
-        valueFormatter: (params: GridValueFormatterParams<Option>) => {
-          return params.value;
-        },
-        renderCell: function render({ row }) {
-          if (isLoading) {
-            return "Loading...";
-          }
-
-          const category = options.find(
-            // @ts-ignore
-            (item) => item.value.toString() === row?.id.toString()
-          );
-          return category?.label;
-        },
       },
       {
         field: "birthDate",
@@ -95,7 +78,7 @@ export const PostList: React.FC = () => {
       },
       {
         field: "status",
-        headerName: "Status",
+        headerName: "Статус",
         minWidth: 120,
         type: "singleSelect",
         valueOptions: ["Учитель", "Ученик"],
@@ -131,6 +114,12 @@ export const PostList: React.FC = () => {
         minWidth: 100,
       },
       {
+        field: "comment",
+        headerName: "Коммент",
+        type: "string",
+        minWidth: 120,
+      },
+      {
         field: "actions",
         type: "actions",
         headerName: "Actions",
@@ -149,7 +138,7 @@ export const PostList: React.FC = () => {
         minWidth: 280,
       },
     ],
-    [options, isLoading]
+    []
   );
 
   const fileType =
@@ -163,46 +152,44 @@ export const PostList: React.FC = () => {
     FileSaver.saveAs(data, fileName + fileExtension);
   };
 
+  const onExport = () =>
+    exportToCSV(
+      dataGridProps.rows.map((row) => {
+        const roww = { ...row };
+
+        for (let line in roww) {
+          if (typeof roww[line] === "boolean") {
+            roww[line] = !!roww[line] ? "+" : "-";
+          }
+        }
+        return {
+          ...roww,
+          teachers: row.teachers.join(", "),
+        };
+      }) as unknown[],
+      "семинар"
+    );
+
   return (
     <>
       <List
         headerButtons={
-          <Button
-            onClick={(e) =>
-              exportToCSV(
-                dataGridProps.rows.map((row) => {
-                  const roww = { ...row };
-
-                  for (let line in roww) {
-                    if (typeof roww[line] === "boolean") {
-                      roww[line] = !!roww[line] ? "+" : "-";
-                    }
-                  }
-                  return {
-                    ...roww,
-                    teachers: row.teachers.join(", "),
-                  };
-                }) as unknown[],
-                "семинар"
-              )
-            }
-          >
-            Экспортировать
-          </Button>
+          <>
+            <Button onClick={onExport}>Экспортировать</Button>
+            <CreateButton>Создать участника</CreateButton>
+          </>
         }
       >
         <DataGrid
           {...dataGridProps}
+          // components={{ Toolbar: GridToolbar }}
+          loading={isLoading}
           rows={dataGridProps.rows.map((row, index) => ({
             index: index + 1,
             ...row,
           }))}
           columns={columns}
           autoHeight
-          editMode={"cell"}
-          onRowEditCommit={(params, event, details) =>
-            console.log({ params, event, details })
-          }
         />
       </List>
     </>

@@ -12,4 +12,5 @@ export interface IUser {
   isCar: boolean;
   isRegistrationsEmailSent?: boolean;
   isPaymentEmailSent?: boolean;
+  comment: string | null;
 }

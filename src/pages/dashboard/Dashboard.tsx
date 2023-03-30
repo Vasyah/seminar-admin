@@ -1,9 +1,15 @@
 import React, { FC } from "react";
 import { useApiUrl, useCustom } from "@pankod/refine-core";
 import { IUser } from "../../interfaces";
-import { Avatar, Grid, Stack, Theme } from "@pankod/refine-mui";
+import {
+  Avatar,
+  Grid,
+  Stack,
+} from "@pankod/refine-mui";
 import GroupIcon from "@mui/icons-material/Group";
 import PaymentsIcon from "@mui/icons-material/Payments";
+import GrassIcon from '@mui/icons-material/Grass';
+import { ThemedSpinner } from "../../components/Spinner/Spinner";
 
 export interface IDashboard {}
 
@@ -18,6 +24,9 @@ export const Dashboard: FC<IDashboard> = (props: IDashboard) => {
 
   const usersCount = users.length;
   const payedCount = users.filter((user) => user.isPaymentEmailSent).length;
+  const veganCount= users.filter((user) => user.isVegan).length;
+
+  if (isLoading) return <ThemedSpinner />;
 
   return (
     <Grid container spacing={2}>
@@ -43,7 +52,6 @@ export const Dashboard: FC<IDashboard> = (props: IDashboard) => {
       <Grid item xs={12} md={6}>
         <div
           style={{
-            backgroundColor: "#fff",
             padding: "16px",
             borderRadius: "4px",
             boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
@@ -56,6 +64,25 @@ export const Dashboard: FC<IDashboard> = (props: IDashboard) => {
             </Avatar>
             <>
               <b>{payedCount}</b>
+            </>
+          </Stack>
+        </div>
+      </Grid>{" "}
+      <Grid item xs={12} md={6}>
+        <div
+          style={{
+            padding: "16px",
+            borderRadius: "4px",
+            boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+          }}
+        >
+          <Stack direction={"column"} alignItems={"center"}>
+            <b>Количество вегетарианцев&nbsp;</b>
+            <Avatar sx={{ bgcolor: "#44944A" }}>
+              <GrassIcon />
+            </Avatar>
+            <>
+              <b>{veganCount}</b>
             </>
           </Stack>
         </div>

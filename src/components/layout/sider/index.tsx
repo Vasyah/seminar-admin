@@ -1,38 +1,37 @@
 import React, { useState } from "react";
 import {
   Box,
+  Button,
+  Collapse,
   Drawer,
-  Sider as DefaultSider,
+  IconButton,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Collapse,
-  Tooltip,
-  Button,
-  IconButton,
   MuiList,
+  Sider as DefaultSider,
+  Tooltip,
 } from "@pankod/refine-mui";
 import {
-  ListOutlined,
-  Logout,
-  ExpandLess,
-  ExpandMore,
+  AutoAwesome,
   ChevronLeft,
   ChevronRight,
-  MenuRounded,
   Dashboard,
-  AutoAwesome,
+  ExpandLess,
+  ExpandMore,
+  ListOutlined,
+  Logout,
 } from "@mui/icons-material";
 import {
   CanAccess,
   ITreeMenu,
   useIsExistAuthentication,
   useLogout,
-  useTitle,
-  useTranslate,
-  useRouterContext,
   useMenu,
   useRefineContext,
+  useRouterContext,
+  useTitle,
+  useTranslate,
 } from "@pankod/refine-core";
 
 import { Title as DefaultTitle } from "../title";
@@ -62,10 +61,9 @@ export const Sider: typeof DefaultSider = ({ render }) => {
     setOpen((previousOpen) => {
       const previousOpenKeys: string[] = Object.keys(previousOpen);
       const uniqueKeys = new Set([...previousOpenKeys, ...defaultOpenKeys]);
-      const uniqueKeysRecord = Object.fromEntries(
+        return Object.fromEntries(
         Array.from(uniqueKeys.values()).map((key) => [key, true])
       );
-      return uniqueKeysRecord;
     });
   }, [defaultOpenKeys]);
 
@@ -361,7 +359,7 @@ export const Sider: typeof DefaultSider = ({ render }) => {
               justifyContent: "center",
             }}
           >
-            <RenderToTitle collapsed={false} />
+            <AutoAwesome sx={{ color: "yellow" }} />
           </Box>
           {drawer}
         </Drawer>

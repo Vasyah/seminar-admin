@@ -5,37 +5,11 @@ import {
   TextField,
   Autocomplete,
   useAutocomplete,
-  Chip,
   Checkbox,
 } from "@pankod/refine-mui";
 import { Controller, useForm } from "@pankod/refine-react-hook-form";
 import { IUser } from "../../interfaces";
-
-const teachers: string[] = [
-  "Кузьмина Лариса Алексеевна",
-  "Румянцева Людмила Петровна",
-  "Румянцев Сергей Борисович",
-  "Румянцев Алексей Борисович",
-  "Подвиженко Татьяна Ивановна",
-  "Смолина Надежда Борисовна",
-  "Шагалина Эльмира Хабибовна",
-  "Ступакова Ольга Петровна",
-  "Епифанцева Елена Романовна",
-  "Ким Сэн Хи\n",
-  "Черепанов Сергей Васильевич",
-  "Король Валерий Юрьевич",
-  "Погонышева Татьяна Владимировна",
-  "Бернадские Игорь Чаславович и Тамара Борисовна",
-  "Митрясова Лилия Витальевна",
-  "Ивановы Дмитрий Юрьевич и Ольга Владимировна",
-  "Внукова Ольга Степановна",
-  "Фуфаева Валентина Николаевна",
-  "Коростылёв Александр Валерьевич",
-  "Кузнецова Алла Александровна",
-  "Коваленковы Владимир и Евгения",
-  "Небесный Игорь Викторович",
-  "Крылова Ольга Николаевна",
-];
+import { SeminarApp } from "../../app/models/app";
 
 export const PostEdit: React.FC = () => {
   const {
@@ -46,151 +20,222 @@ export const PostEdit: React.FC = () => {
     formState: { errors },
   } = useForm<IUser, HttpError, IUser>();
 
-  const { autocompleteProps } = useAutocomplete<IUser>({
-    resource: "users",
-    defaultValue: queryResult?.data?.data?.id,
-  });
-
   return (
-    <Edit saveButtonProps={saveButtonProps} canDelete>
-      <Box
-        component="form"
-        // sx={{ display: "flex", flexDirection: "column" }}
-        autoComplete="off"
-      >
-        <TextField
-          {...register("name", {
-            required: "This field is required",
-          })}
-          error={!!errors.name}
-          helperText={errors.name?.message}
-          margin="normal"
-          fullWidth
-          label="ФИО"
-          name="name"
-          // autoFocus
-        />
-        <TextField
-          {...register("birthDate", {
-            required: "This field is required",
-          })}
-          error={!!errors.birthDate}
-          helperText={errors.birthDate?.message}
-          margin="normal"
-          fullWidth
-          label="Дата рождения"
-          name="birthDate"
-          autoFocus
-        />
-        <TextField
-          {...register("phone", {
-            required: "This field is required",
-          })}
-          error={!!errors.phone}
-          helperText={errors.phone?.message}
-          margin="normal"
-          fullWidth
-          label="Номер телефона"
-          name="phone"
-          autoFocus
-        />
-        <TextField
-          {...register("email", {
-            required: "This field is required",
-          })}
-          error={!!errors.email}
-          helperText={errors.email?.message}
-          margin="normal"
-          fullWidth
-          label="Email"
-          name="email"
-          autoFocus
-        />
-        {/*<TextField*/}
-        {/*  {...register("teachers", {*/}
-        {/*    required: "This field is required",*/}
-        {/*  })}*/}
-        {/*  error={!!errors.teachers}*/}
-        {/*  helperText={errors.teachers?.message}*/}
-        {/*  margin="normal"*/}
-        {/*  fullWidth*/}
-        {/*  label="Учителя"*/}
-        {/*  name="teachers"*/}
-        {/*  autoFocus*/}
-        {/*/>*/}
-        <Controller
-          {...register("status", {
-            required: "This field is required",
-          })}
-          control={control}
-          name="status"
-          rules={{ required: "This field is required" }}
-          defaultValue={null as any}
-          render={({ field }) => (
-            <Autocomplete
-              options={["Ученик", "Учитель"]}
-              {...field}
-              onChange={(_, value) => {
-                field.onChange(value);
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Вы"
-                  margin="normal"
-                  variant="outlined"
-                  error={!!errors.status}
-                  helperText={errors.status?.message}
-                  required
-                />
-              )}
-            />
-          )}
-        />
-        <Controller
-          {...register("teachers", {
-            required: "This field is required",
-          })}
-          control={control}
-          name="teachers"
-          rules={{ required: "This field is required" }}
-          render={({ field }) => {
-            console.log(field);
-            return (
+    <div>
+      <Edit saveButtonProps={saveButtonProps} canDelete>
+        <Box
+          component="form"
+          // sx={{ display: "flex", flexDirection: "column" }}
+          autoComplete="off"
+        >
+          <TextField
+            {...register("name", {
+              required: "Поле обязательно для ввода",
+            })}
+            error={!!errors.name}
+            helperText={errors.name?.message}
+            margin="normal"
+            fullWidth
+            label="ФИО"
+            name="name"
+            // autoFocus
+          />
+          <Controller
+            {...register("town", {
+              required: "Поле обязательно для ввода",
+            })}
+            control={control}
+            name="town"
+            rules={{ required: "Поле обязательно для ввода" }}
+            render={({ field }) => (
               <Autocomplete
-                multiple
-                defaultValue={field.value}
-                options={teachers}
+                {...field}
+                options={SeminarApp.cities}
+                onChange={(_, value) => {
+                  field.onChange(value);
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    defaultValue={field.value}
+                    {...params}
+                    label="Город"
+                    margin="normal"
+                    variant="outlined"
+                    error={!!errors.town}
+                    helperText={errors.town?.message}
+                    required
+                  />
+                )}
+              />
+            )}
+          />
+          <TextField
+            {...register("birthDate", {
+              required: "Поле обязательно для ввода",
+            })}
+            error={!!errors.birthDate}
+            helperText={errors.birthDate?.message}
+            margin="normal"
+            fullWidth
+            label="Дата рождения"
+            name="birthDate"
+            autoFocus
+          />
+          <TextField
+            {...register("phone", {
+              required: "Поле обязательно для ввода",
+            })}
+            error={!!errors.phone}
+            helperText={errors.phone?.message}
+            margin="normal"
+            fullWidth
+            label="Номер телефона"
+            name="phone"
+            autoFocus
+          />
+          <TextField
+            {...register("email", {
+              required: "Поле обязательно для ввода",
+            })}
+            error={!!errors.email}
+            helperText={errors.email?.message}
+            margin="normal"
+            fullWidth
+            label="Email"
+            name="email"
+            autoFocus
+          />
+          <Controller
+            {...register("status", {
+              required: "Поле обязательно для ввода",
+            })}
+            control={control}
+            name="status"
+            rules={{ required: "Поле обязательно для ввода" }}
+            render={({ field }) => (
+              <Autocomplete
+                options={["Ученик", "Учитель"]}
                 {...field}
                 onChange={(_, value) => {
                   field.onChange(value);
                 }}
-                // renderTags={(value, getTagProps) =>
-                //   value.map((option, index) => (
-                //     <Chip
-                //       variant="outlined"
-                //       label={option}
-                //       size="small"
-                //       {...getTagProps({ index })}
-                //     />
-                //   ))
-                // }
-                renderInput={(params) => {
-                  console.log(params);
-                  return (
-                    <TextField
-                      {...params}
-                      // variant="filled"
-                      label="Учителя"
-                      placeholder="Учителя"
-                    />
-                  );
-                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Статус"
+                    margin="normal"
+                    variant="outlined"
+                    error={!!errors.status}
+                    helperText={errors.status?.message}
+                    required
+                  />
+                )}
               />
-            );
-          }}
-        />
-      </Box>
-    </Edit>
+            )}
+          />
+          <Controller
+            {...register("teachers", {
+              required: "Поле обязательно для ввода",
+            })}
+            control={control}
+            name="teachers"
+            rules={{ required: "Поле обязательно для ввода" }}
+            render={({ field }) => {
+              return (
+                <Autocomplete
+                  multiple
+                  options={SeminarApp.teachers}
+                  {...field}
+                  onChange={(_, value) => {
+                    field.onChange(value);
+                  }}
+                  renderInput={(params) => {
+                    return (
+                      <TextField
+                        error={!!errors.teachers}
+                        {...params}
+                        margin="normal"
+                        label="Учителя"
+                        helperText={errors.teachers?.message}
+                        required
+                        placeholder="Учителя"
+                      />
+                    );
+                  }}
+                />
+              );
+            }}
+          />
+          <div>
+            <label htmlFor="isCar">На машине</label>
+            <Controller
+              control={control}
+              name="isCar"
+              render={({
+                field: { onChange, onBlur, value, name, ref },
+                fieldState: { invalid, isTouched, isDirty, error },
+                formState,
+              }) => (
+                <>
+                  <Checkbox
+                    defaultChecked={value}
+                    onBlur={onBlur} // notify when input is touched
+                    onChange={onChange} // send value to hook form
+                    checked={value}
+                    inputRef={ref}
+                  />
+                </>
+              )}
+            />
+          </div>
+          <div>
+            <label htmlFor="isConcert">Участвует в концерте</label>
+            <Controller
+              control={control}
+              name="isConcert"
+              render={({
+                field: { onChange, onBlur, value, name, ref },
+              }) => (
+                <>
+                  <Checkbox
+                    onBlur={onBlur} // notify when input is touched
+                    onChange={onChange} // send value to hook form
+                    checked={value}
+                    inputRef={ref}
+                  />
+                </>
+              )}
+            />
+          </div>
+          <div>
+            <label htmlFor="isVegan">Веган</label>
+            <Controller
+              control={control}
+              name="isVegan"
+              render={({
+                field: { onChange, onBlur, value, name, ref },
+              }) => (
+                <Checkbox
+                  onBlur={onBlur} // notify when input is touched
+                  onChange={onChange} // send value to hook form
+                  checked={value}
+                  inputRef={ref}
+                />
+              )}
+            />
+          </div>
+
+          <TextField
+            {...register("comment")}
+            error={!!errors.name}
+            helperText={errors.name?.message}
+            margin="normal"
+            fullWidth
+            label="Комментарий"
+            name="comment"
+          />
+        </Box>
+      </Edit>
+    </div>
   );
 };
