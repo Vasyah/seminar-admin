@@ -34,7 +34,7 @@ export const PaymentButton: FC<IPaymentButton> = (props: IPaymentButton) => {
           "обед 21.04 - 400р, ужин 23.04 - 350р"
         )
       ).then(() => {
-        RegistrationApi.updatePayment(user);
+        RegistrationApi.updatePayment(user, true);
         successNotify();
       });
     } catch (e) {

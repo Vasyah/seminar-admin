@@ -29,8 +29,12 @@ export class RegistrationApi {
     });
   };
 
-  static updatePayment = (user: IUser) => {
-    return RegistrationApi.updateUser(user.id, { isPaymentEmailSent: true });
+  static updatePayment = (user: IUser, isPaymentSent: boolean) => {
+    return RegistrationApi.updateUser(user.id, { isPaymentEmailSent: isPaymentSent });
+  };
+
+  static updateRegistration = (user: IUser) => {
+    return RegistrationApi.updateUser(user.id, { isRegistrationsEmailSent: true });
   };
 
   static sendPaymentEmail = (user: IUser, template: string) => {

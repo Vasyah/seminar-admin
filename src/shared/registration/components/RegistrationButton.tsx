@@ -27,7 +27,7 @@ export const RegistrationButton: FC<IRegistrationButton> = (
   const sendEmail = () => {
     try {
       RegistrationApi.sendRegistrationEmail(user).then(() => {
-        RegistrationApi.updatePayment(user);
+        RegistrationApi.updateRegistration(user);
         successNotify();
       });
     } catch (e) {
